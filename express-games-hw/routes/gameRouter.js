@@ -74,36 +74,30 @@ router.post('/create-new-game', (req, res)=>{
             }
         }
         games.push(newGame)
-        res.json(games)
+        res.json({games})
     }
 })
 
-router.put('/update-game', (req, res)=>{
+router.put('/update-game/:id', (req, res)=>{
+    let gameFound = false;
     const {id, game, description} = req.body;
     for(let item of games){
-    if(item.id === id){
-        if(game){
-            for(let item of games){
-                if(item.id === id){
-                    item.game = game
-                }
+        if(item.id === req.params.id){
+            gameFound = true;
+            if(game){
+                item.game = game
             }
-        }
-        if(description){
-            for(let item of games){
-                if(item.id === id){
-                    item.description = description
-                }
+            if(description){
+                item.description = description
             }
+            res.json({games})
         }
-        res.json(games)
     }
-    
-}
-    res.json({
-        message: "game not found, cannnot update"
-    })
-   
+    if(gameFound === false){
+        res.json({
+            message: "game not found, cannot update."
+        })
+    }
 })
 
 router.put('/delete-game', (req, res)=>{
